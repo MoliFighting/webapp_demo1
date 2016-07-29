@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias alias="User" type="com.wanglei.model.User"/>
+		<typeAlias alias="Author" type="com.wanglei.model.Author"/>
+		<typeAlias alias="Visit" type="com.wanglei.model.Visit"/>
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<!--事务处理机制-->
+			<transactionManager type="JDBC"><!--type="MANAGED" 对应spring等第三方管理工具-->
+			</transactionManager>
+			<!--数据源配置-->
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver"/>
+				<property name="url" value="jdbc:mysql://127.0.0.1:3306/database1"/>
+				<property name="username" value="root"/>
+				<property name="password" value="root"/>
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="mybatis/UserMapper.xml"/>
+		<mapper resource="mybatis/AuthorMapper.xml"/>
+		<!--下面这一行 不能加 加了就会报错 说这个接口已经在MapperRegistry中注册过了 重复注册会出错的意思 不加这一行也可以找到该接口 也是非常神奇-->
+		<!--好 不加就不加吧  有时间搞清楚到底在哪里注册的-->
+		<!--mapper class="com.wanglei.dao.IUserDao"/-->
+	</mappers>
+</configuration>

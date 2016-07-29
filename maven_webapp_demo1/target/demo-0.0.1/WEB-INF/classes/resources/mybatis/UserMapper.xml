@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanglei.dao.IUserDao">
+
+    <resultMap type="User" id="userResultMap">
+        <id property="id" column="ID"/>
+        <result property="nickname" column="NICKNAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="first_name" column="FIRST_NAME"/>
+        <result property="last_name" column="LAST_NAME"/>
+    </resultMap>
+
+    <!-- 查询用户，根据id -->
+    <select id="getUser" parameterType="Int" resultType="User" resultMap="userResultMap">
+        <![CDATA[
+            SELECT * from user USER
+                WHERE USER.ID = #{id}
+        ]]>
+    </select>
+
+    <!-- 查询用户列表 -->
+    <select id="getUserAll"  resultType="com.wanglei.model.User" resultMap="userResultMap">
+        <![CDATA[
+            SELECT * from user
+        ]]>
+    </select>
+    
+    <select id="getUserCount" resultType="int" >
+        SELECT  COUNT (*) FROM user
+    </select>
+
+</mapper>

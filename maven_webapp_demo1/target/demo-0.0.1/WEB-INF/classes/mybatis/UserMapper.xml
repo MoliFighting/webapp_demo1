@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanglei.map">
+
+    <resultMap id="userResultMap"  type="User">
+        <id property="id" column="ID"/>
+        <result property="nickname" column="NICKNAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="first_name" column="FIRST_NAME"/>
+        <result property="last_name" column="LAST_NAME"/>
+    </resultMap>
+
+    <!-- 查询用户，根据id -->
+    <select id="getUserByID" parameterType="Int" resultType="User">
+            SELECT * from user WHERE id = #{id}
+    </select>
+
+    <!-- 插入新用户  -->
+    <insert id="insertUser" parameterType="User" statementType="PREPARED" keyProperty="id" useGeneratedKeys="true">
+            insert into User (nickname,password) VALUES
+            (#{nickname},#{password})
+    </insert>
+
+    <!--更新用户信息-->
+    <update id="updateUser" parameterType="User">
+            update user set nickname = #{nickname},
+                            password = #{password}
+                        where id = #{id}
+    </update>
+
+    <!--删除用户信息-->
+    <!--采用了另外一种配置方法 创建接口的方法 不需要MAPPER文件配置 较复杂的工程不建议使用接口配置方法-->
+
+    <resultMap id="visitMap" type="User">
+        <id property="id" column="ID"/>
+        <result property="nickname" column="NICKNAME"/>
+        <result property="password" column="PASSWORD"/>
+        <result property="first_name" column="FIRST_NAME"/>
+        <result property="last_name" column="LAST_NAME"/>
+        <collection property="visitList" javaType="ArrayList" ofType="Visit" column="visitID">
+            <result property="visitID" column="visitID" />
+            <result property="visitIP" column="visitIP" />
+            <result property="visitDate" column="visitDate" />
+        </collection>
+    </resultMap>
+    <select id="selectVisit" resultMap="visitMap">
+        select * from user inner join visit on user.id = visit.userid
+    </select>
+</mapper>

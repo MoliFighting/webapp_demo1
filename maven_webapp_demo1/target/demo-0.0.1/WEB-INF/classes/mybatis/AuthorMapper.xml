@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanglei.map">
+
+    <!-- 插入新作家  -->
+    <insert id="insertAuthor" parameterType="User" statementType="PREPARED">
+         insert into author (userid,realname,idcard) VALUES
+        (#{user.id},#{realname},#{idcard})
+    </insert>
+    <!--******联合查询***************-->
+    <resultMap id="AuthorMap" type="Author">
+        <id property="id" column="user.id"/>
+        <result property="realname" column="realname"/>
+        <result property="idCard" column="idcard"/>
+        <association property="user"  javaType="User">
+            <!--依次将数据库返回的每一列 赋给user的每个变量 构造author的user属性-->
+            <id property="id" column="user.id"/>
+            <result property="nickname" column="nickname"/>
+            <result property="password" column="password"/>
+        </association>
+    </resultMap>
+    <select id="selectAuthorJoin" resultMap="AuthorMapByCon">
+        select * from author inner join user
+        on author.userid = user.id
+    </select>
+    <!--*********构造查询******************-->
+    <resultMap id="AuthorMapByCon" type="Author">
+        <id property="id" column="user.id"/>
+        <result property="realname" column="realname"/>
+        <result property="idCard" column="idcard"/>
+        <association property="user"  javaType="User">
+            <!--取出数据库返回的某几列(这里是两列) 赋给user的构造函数 从而构造author的user属性-->
+            <constructor>
+                <arg column="nickname" javaType="String"/>
+                <arg column="password" javaType="String"/>
+            </constructor>
+        </association>
+    </resultMap>
+    <select id="selectAuthorCon" resultMap="AuthorMapByCon">
+        select * from author inner join user
+        on author.userid = user.id
+    </select>
+    <!--**********子查询******************-->
+    <resultMap id="AuthorSubMap" type="Author">
+        <id property="id" column="user.id"/>
+        <result property="realname" column="realname"/>
+        <result property="idCard" column="idcard"/>
+        <association property="user"  javaType="User" column="userid" select="getUserByID">
+            <!--将userid列传递给getUserByID方法 进而构造user属性-->
+        </association>
+    </resultMap>
+    <select id="selectAuthorSub" resultMap="AuthorSubMap">
+        select * from author
+    </select>
+    <!--子查询与联合查询的区别:-->
+    <!-- 1.联合查询 :一次查询 占用资源大-->
+    <!--2.子查询 :N+1次查询  占用资源可大可小-->
+    <!--持久层框架:懒加载机制 需要的时候去查询 -->
+    <!--懒加载:基本config.xml中 settings中 的lazyLoadingEnabled:true  aggressiveLazyLoading:false    -->
+    <!--懒加载+子查询:可以提高效率  -->
+</mapper>
